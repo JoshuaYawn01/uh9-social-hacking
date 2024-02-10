@@ -8,8 +8,28 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+/**
 export default {
 	async fetch(request, env, ctx) {
 		return new Response('Hello World!');
 	},
 };
+*/
+import { Ai } from '@cloudflare/ai'
+
+export default {
+	async fetch(request, env, ctx) {
+    const ai = new Ai(env.AI)
+
+    const answer = await ai.run(
+      '@cf/meta/llama-2-7b-chat-int8',
+      {
+        messages: [
+          { role: 'user', content: `What is your name?` }
+        ]
+      }
+    )
+
+    return new Response(JSON.stringify(answer))
+	}
+}
